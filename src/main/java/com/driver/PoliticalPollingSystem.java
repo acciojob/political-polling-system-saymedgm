@@ -11,7 +11,28 @@ public class PoliticalPollingSystem {
     private static final String API_ENDPOINT = "https://example.com/api/vote";
 
     public void castVote(String party) {
-    	//your code goes here
+        try {
+            URL url = new URL(API_ENDPOINT);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+
+            // Send the voting data to the remote backend API
+            String postData = "party=" + party;
+            connection.getOutputStream().write(postData.getBytes());
+
+            // Check the API response code
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                System.out.println("Vote successfully recorded for party: " + party);
+            } else {
+                System.out.println("Failed to record vote. Response code: " + responseCode);
+            }
+
+            connection.disconnect();
+        } catch (IOException e) {
+            System.err.println("Error while connecting to the remote backend API: " + e.getMessage());
+        }
     }
 
     public static void main(String[] args) {
@@ -30,4 +51,3 @@ public class PoliticalPollingSystem {
         }
     }
 }
-
